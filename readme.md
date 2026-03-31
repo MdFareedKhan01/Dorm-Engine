@@ -1,0 +1,23 @@
+## 🛠️ Setup Instructions
+
+1. Install Volta: winget install Volta.Volta
+
+2. Clone repo:
+   git clone https://github.com/MdFareedKhan01/Dorm-Engine
+   cd dorm-engine
+
+3. Install dependencies:
+   npm install
+
+4. Run project:
+   npm run dev
+
+---
+
+## 🌿 Git Workflow
+
+* Always work on feature branches
+* Base branch: dev
+* Never push directly to main
+
+---
