@@ -4,8 +4,9 @@
 
 2. Clone repo:
    git clone https://github.com/MdFareedKhan01/Dorm-Engine
-   cd dorm-engine 
-3. in apps/server , remove ".example" from ".env.example"
+   cd dorm-engine
+4. change branch : git checkout dev
+4. in apps/server , remove ".example" from ".env.example"
 3. Install dependencies:
    npm install
 
