@@ -7,7 +7,7 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { fetchAdminOverview } from '../services/api';
 import ProfileMenu from './ProfileMenu';
 import { getStoredTheme, toggleTheme } from '../utils/theme';
@@ -28,6 +28,7 @@ const items = [
 ];
 
 export default function WardenTopbar() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [theme, setTheme] = useState(() => getStoredTheme());
   const [open, setOpen] = useState(false);
@@ -104,6 +105,29 @@ export default function WardenTopbar() {
               <button type="button" className="mobile-drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close navigation menu">
                 <CloseRoundedIcon />
               </button>
+            </div>
+            <div className="mobile-drawer-tools">
+              <button
+                type="button"
+                className="icon-button theme-toggle"
+                onClick={handleThemeToggle}
+                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {theme === 'dark' ? <LightModeRoundedIcon /> : <DarkModeRoundedIcon />}
+              </button>
+              <button
+                type="button"
+                className="icon-button"
+                onClick={() => {
+                  setDrawerOpen(false);
+                  navigate('/warden/notices');
+                }}
+                aria-label="Open notices"
+              >
+                <NotificationsNoneRoundedIcon />
+                {(alerts.length || overview.recentMaintenance.length) ? <span className="notify-dot" /> : null}
+              </button>
+              <ProfileMenu variant="admin" />
             </div>
             <nav className="mobile-drawer-nav">
               {items.map((item) => (

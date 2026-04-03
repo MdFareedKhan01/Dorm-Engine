@@ -7,7 +7,7 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { fetchPersonalUpdates } from '../services/api';
 import ProfileMenu from './ProfileMenu';
 import { getStoredTheme, toggleTheme } from '../utils/theme';
@@ -22,6 +22,7 @@ const items = [
 ];
 
 export default function StudentTopbar() {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [updates, setUpdates] = useState({ notices: [], complaints: [] });
@@ -87,6 +88,29 @@ export default function StudentTopbar() {
               <button type="button" className="mobile-drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close navigation menu">
                 <CloseRoundedIcon />
               </button>
+            </div>
+            <div className="mobile-drawer-tools">
+              <button
+                type="button"
+                className="icon-button theme-toggle"
+                onClick={handleThemeToggle}
+                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {theme === 'dark' ? <LightModeRoundedIcon /> : <DarkModeRoundedIcon />}
+              </button>
+              <button
+                type="button"
+                className="icon-button"
+                onClick={() => {
+                  setDrawerOpen(false);
+                  navigate('/student/notices');
+                }}
+                aria-label="Open notices"
+              >
+                <NotificationsNoneRoundedIcon />
+                {(latestNotices.length + pendingComplaints.length) ? <span className="notify-dot" /> : null}
+              </button>
+              <ProfileMenu />
             </div>
             <nav className="mobile-drawer-nav">
               {items.map((item) => (
