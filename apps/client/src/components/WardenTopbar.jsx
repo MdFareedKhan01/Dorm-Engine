@@ -5,6 +5,7 @@ import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { fetchAdminOverview } from '../services/api';
@@ -68,6 +69,16 @@ export default function WardenTopbar() {
 
   return (
     <header className="topbar warden-topbar">
+      <Link to="/warden/dashboard" className="mobile-topbar-brand" aria-label="Go to admin dashboard">
+        <div className="brand-mark warden-mark">
+          <HomeRoundedIcon fontSize="small" />
+        </div>
+        <div>
+          <p className="brand-title">DormEngine</p>
+          <p className="brand-subtitle">Admin Portal</p>
+        </div>
+      </Link>
+
       <button
         type="button"
         className="mobile-menu-button"
@@ -83,7 +94,7 @@ export default function WardenTopbar() {
             <div className="mobile-drawer-header">
               <Link to="/" className="sidebar-brand sidebar-brand-link" onClick={() => setDrawerOpen(false)}>
                 <div className="brand-mark warden-mark">
-                  <CloseRoundedIcon fontSize="small" />
+                  <HomeRoundedIcon fontSize="small" />
                 </div>
                 <div>
                   <p className="brand-title">DormEngine</p>

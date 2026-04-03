@@ -568,6 +568,23 @@ th {
   border: 1px solid var(--line);
   flex-shrink: 0;
 }
+.mobile-topbar-brand {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--heading);
+}
+.mobile-topbar-brand .brand-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.1;
+}
+.mobile-topbar-brand .brand-subtitle {
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 1.1;
+}
 .mobile-drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -578,7 +595,8 @@ th {
 .mobile-drawer {
   width: min(84vw, 320px);
   height: 100%;
-  background: var(--surface-strong);
+  background: #ffffff;
+  opacity: 1;
   border-right: 1px solid var(--line);
   box-shadow: 0 24px 48px rgba(12, 24, 22, 0.28);
   display: flex;
@@ -609,13 +627,13 @@ th {
   gap: 8px;
 }
 .mobile-drawer-nav .nav-item {
-  color: var(--heading);
-  background: color-mix(in srgb, var(--surface-strong) 78%, var(--surface-soft));
+  color: #142019;
+  background: #ffffff;
   border: 1px solid var(--line);
 }
 .mobile-drawer-nav .nav-item:hover,
 .mobile-drawer-nav .nav-item.active {
-  background: color-mix(in srgb, var(--brand) 16%, var(--surface-strong));
+  background: #eef5f4;
   border-color: color-mix(in srgb, var(--brand) 32%, var(--line));
 }
 .warden-mark { background: rgba(91, 133, 151, 0.18); }
@@ -2343,9 +2361,13 @@ body.theme-dark .preference-option.selected {
     padding-left: 12px;
     padding-right: 12px;
   }
-  .mobile-menu-button { display: inline-flex; }
+  .mobile-topbar-brand { display: inline-flex; }
+  .mobile-menu-button {
+    display: inline-flex;
+    margin-left: auto;
+  }
+  .topbar-actions { display: none; }
   .sidebar-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .topbar-actions { justify-content: flex-end; margin-left: 0; }
   .quick-actions-grid,
   .warden-stats-grid,
   .fees-summary-grid,

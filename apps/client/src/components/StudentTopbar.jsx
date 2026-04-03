@@ -5,6 +5,7 @@ import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { fetchPersonalUpdates } from '../services/api';
@@ -51,6 +52,16 @@ export default function StudentTopbar() {
 
   return (
     <header className="topbar student-topbar">
+      <Link to="/student/dashboard" className="mobile-topbar-brand" aria-label="Go to student dashboard">
+        <div className="brand-mark">
+          <HomeRoundedIcon fontSize="small" />
+        </div>
+        <div>
+          <p className="brand-title">DormEngine</p>
+          <p className="brand-subtitle">Student Portal</p>
+        </div>
+      </Link>
+
       <button
         type="button"
         className="mobile-menu-button"
@@ -66,7 +77,7 @@ export default function StudentTopbar() {
             <div className="mobile-drawer-header">
               <Link to="/" className="sidebar-brand sidebar-brand-link" onClick={() => setDrawerOpen(false)}>
                 <div className="brand-mark">
-                  <CloseRoundedIcon fontSize="small" />
+                  <HomeRoundedIcon fontSize="small" />
                 </div>
                 <div>
                   <p className="brand-title">DormEngine</p>
