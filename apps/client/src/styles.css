@@ -571,15 +571,16 @@ th {
 .mobile-drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(6, 12, 10, 0.42);
+  background: rgba(6, 12, 10, 0.58);
+  backdrop-filter: blur(2px);
   z-index: 1500;
 }
 .mobile-drawer {
   width: min(84vw, 320px);
   height: 100%;
-  background: var(--surface);
+  background: var(--surface-strong);
   border-right: 1px solid var(--line);
-  box-shadow: var(--shadow-strong);
+  box-shadow: 0 24px 48px rgba(12, 24, 22, 0.28);
   display: flex;
   flex-direction: column;
 }
@@ -606,6 +607,16 @@ th {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+.mobile-drawer-nav .nav-item {
+  color: var(--heading);
+  background: color-mix(in srgb, var(--surface-strong) 78%, var(--surface-soft));
+  border: 1px solid var(--line);
+}
+.mobile-drawer-nav .nav-item:hover,
+.mobile-drawer-nav .nav-item.active {
+  background: color-mix(in srgb, var(--brand) 16%, var(--surface-strong));
+  border-color: color-mix(in srgb, var(--brand) 32%, var(--line));
 }
 .warden-mark { background: rgba(91, 133, 151, 0.18); }
 .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
@@ -1007,6 +1018,13 @@ th {
 .pill-tab.active { background: #d8ebe6; color: var(--heading); }
 .complaints-layout,
 .mess-page { display: flex; flex-direction: column; gap: 16px; }
+.mess-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 .notice-list { display: flex; flex-direction: column; gap: 14px; }
 .complaints-grid { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 16px; }
 .complaint-list { display: flex; flex-direction: column; gap: 12px; }
@@ -1137,6 +1155,30 @@ th {
   font-weight: 700;
 }
 .mess-grid { display: grid; gap: 14px; }
+.meal-focus-card {
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.meal-focus-label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.meal-focus-card h3 {
+  margin: 8px 0 0;
+  font-size: 24px;
+  color: var(--heading);
+}
+.meal-focus-card p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
 .meal-slot {
   min-height: 96px;
   padding: 10px 12px;
@@ -2367,6 +2409,26 @@ body.theme-dark .preference-option.selected {
   .topbar-profile .profile-meta,
   .topbar-profile .profile-name {
     display: none;
+  }
+  .question-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .mini-progress-wrap {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .mini-progress-wrap span {
+    min-width: 0;
+  }
+  .question-footer .primary-button {
+    width: 100%;
+  }
+  .mess-actions {
+    width: 100%;
+    justify-content: flex-start;
   }
 }
 

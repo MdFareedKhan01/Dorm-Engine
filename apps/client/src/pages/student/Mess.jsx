@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import RestaurantMenuRoundedIcon from '@mui/icons-material/RestaurantMenuRounded';
 import { messMenu } from '../../data/studentFlow';
 import { createMessFeedback } from '../../services/api';
-import { getCurrentMealState, weekdayLabels } from '../../utils/messSchedule';
+import { getCurrentMealState, getRollingMealState, weekdayLabels } from '../../utils/messSchedule';
 
 export default function StudentMess() {
   const [now, setNow] = useState(() => new Date());
@@ -10,6 +10,7 @@ export default function StudentMess() {
   const [rating, setRating] = useState(4);
   const [review, setReview] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showFullMenu, setShowFullMenu] = useState(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 60 * 1000);
@@ -17,7 +18,12 @@ export default function StudentMess() {
   }, []);
 
   const liveMeal = useMemo(() => getCurrentMealState(now), [now]);
-  const activeMealLabel = liveMeal.mealSlot ? `${liveMeal.mealSlot} · ${weekdayLabels[liveMeal.dayIndex]}` : 'No meal available right now';
+  const rollingMeal = useMemo(() => getRollingMealState(now), [now]);
+  const highlightedMeal = useMemo(
+    () => messMenu.find((row) => row.slot === rollingMeal.mealSlot)?.days[rollingMeal.dayIndex],
+    [rollingMeal.dayIndex, rollingMeal.mealSlot],
+  );
+  const activeMealLabel = `${rollingMeal.mealSlot} · ${weekdayLabels[rollingMeal.dayIndex]}`;
 
   const openFeedback = (slot, day, item) => {
     if (liveMeal.mealSlot !== slot || liveMeal.dayIndex !== day) {
@@ -54,59 +60,77 @@ export default function StudentMess() {
         <div className="panel-title between">
           <div>
             <h2>My Mess Menu</h2>
-            <p>Only the current meal is open for feedback. Everything else stays locked.</p>
+            <p>Showing one meal at a time. It remains visible until the next meal starts.</p>
           </div>
-          <button
-            type="button"
-            className="secondary-button"
-            style={{ width: 'auto' }}
-            disabled={!liveMeal.mealSlot}
-            onClick={() => liveMeal.mealSlot && openFeedback(liveMeal.mealSlot, liveMeal.dayIndex, messMenu.find((row) => row.slot === liveMeal.mealSlot)?.days[liveMeal.dayIndex])}
-          >
-            {liveMeal.mealSlot ? `Rate ${liveMeal.mealSlot}` : 'Feedback Locked'}
-          </button>
+          <div className="mess-actions">
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ width: 'auto' }}
+              disabled={!liveMeal.mealSlot}
+              onClick={() => liveMeal.mealSlot && openFeedback(liveMeal.mealSlot, liveMeal.dayIndex, messMenu.find((row) => row.slot === liveMeal.mealSlot)?.days[liveMeal.dayIndex])}
+            >
+              {liveMeal.mealSlot ? `Rate ${liveMeal.mealSlot}` : 'Feedback Locked'}
+            </button>
+            <button
+              type="button"
+              className="ghost-button"
+              style={{ width: 'auto' }}
+              onClick={() => setShowFullMenu((prev) => !prev)}
+            >
+              {showFullMenu ? 'Hide Full Menu' : 'View Full Menu'}
+            </button>
+          </div>
         </div>
 
         <div className="mess-status-banner">
           <div>
             <span className="tiny-chip">Live mess status</span>
             <h3>{activeMealLabel}</h3>
-            <p>{liveMeal.dayLabel} · {liveMeal.timeLabel}</p>
+            <p>{highlightedMeal || 'Meal not available'} · {liveMeal.dayLabel} · {liveMeal.timeLabel}</p>
           </div>
           <div className="mess-status-pill">
-            {liveMeal.mealSlot ? 'Open for feedback' : 'Feedback opens during meal hours'}
+            {liveMeal.mealSlot ? 'Open for feedback' : 'Shown until next meal time'}
           </div>
         </div>
 
         <div className="mess-grid">
-          <div className="meal-board">
-            <div className="meal-calendar-header">
-              <div className="meal-head-corner">Meal</div>
-              {weekdayLabels.map((day, index) => (
-                <div key={day} className={`meal-head-cell ${liveMeal.dayIndex === index ? 'active' : ''}`}>
-                  {day}
+          <div className="meal-focus-card">
+            <p className="meal-focus-label">Current Meal</p>
+            <h3>{rollingMeal.mealSlot}</h3>
+            <p>{weekdayLabels[rollingMeal.dayIndex]} · {highlightedMeal || 'Meal not available'}</p>
+          </div>
+
+          {showFullMenu ? (
+            <div className="meal-board">
+              <div className="meal-calendar-header">
+                <div className="meal-head-corner">Meal</div>
+                {weekdayLabels.map((day, index) => (
+                  <div key={day} className={`meal-head-cell ${liveMeal.dayIndex === index ? 'active' : ''}`}>
+                    {day}
+                  </div>
+                ))}
+              </div>
+              {messMenu.map((row) => (
+                <div key={row.slot} className={`meal-row ${liveMeal.mealSlot === row.slot ? 'active' : ''}`}>
+                  <div className="meal-slot">{row.slot}</div>
+                  {row.days.map((meal, index) => (
+                    <button
+                      key={`${row.slot}-${index}`}
+                      type="button"
+                      className={`meal-cell ${isRateableMeal(row.slot, index) ? 'active' : ''}`}
+                      disabled={!isRateableMeal(row.slot, index)}
+                      onClick={() => openFeedback(row.slot, index, meal)}
+                    >
+                      <RestaurantMenuRoundedIcon className="meal-icon" />
+                      <span>{meal}</span>
+                      <small className="meal-feedback-link">{isRateableMeal(row.slot, index) ? 'Review this meal' : 'Locked'}</small>
+                    </button>
+                  ))}
                 </div>
               ))}
             </div>
-            {messMenu.map((row) => (
-              <div key={row.slot} className={`meal-row ${liveMeal.mealSlot === row.slot ? 'active' : ''}`}>
-                <div className="meal-slot">{row.slot}</div>
-                {row.days.map((meal, index) => (
-                  <button
-                    key={`${row.slot}-${index}`}
-                    type="button"
-                    className={`meal-cell ${isRateableMeal(row.slot, index) ? 'active' : ''}`}
-                    disabled={!isRateableMeal(row.slot, index)}
-                    onClick={() => openFeedback(row.slot, index, meal)}
-                  >
-                    <RestaurantMenuRoundedIcon className="meal-icon" />
-                    <span>{meal}</span>
-                    <small className="meal-feedback-link">{isRateableMeal(row.slot, index) ? 'Review this meal' : 'Locked'}</small>
-                  </button>
-                ))}
-              </div>
-            ))}
-          </div>
+          ) : null}
         </div>
 
         {selectedMeal ? (
