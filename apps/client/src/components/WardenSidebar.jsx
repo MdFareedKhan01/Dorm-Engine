@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import GroupWorkRoundedIcon from '@mui/icons-material/GroupWorkRounded';
@@ -29,7 +29,7 @@ const items = [
 export default function WardenSidebar() {
   return (
     <aside className="sidebar warden-sidebar">
-      <div className="sidebar-brand warden-brand">
+      <Link to="/" className="sidebar-brand warden-brand sidebar-brand-link" aria-label="Go to home page">
         <div className="brand-mark warden-mark">
           <AdminPanelSettingsRoundedIcon fontSize="small" />
         </div>
@@ -37,7 +37,7 @@ export default function WardenSidebar() {
           <p className="brand-title">DormEngine</p>
           <p className="brand-subtitle">Admin Portal</p>
         </div>
-      </div>
+      </Link>
 
       <nav className="sidebar-nav">
         <div className="nav-label">Admin</div>

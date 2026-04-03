@@ -11,12 +11,13 @@ export default function StudentDashboard() {
   const [noticeCount, setNoticeCount] = useState(0);
   const [pendingComplaintCount, setPendingComplaintCount] = useState(0);
   const [roomCard, setRoomCard] = useState({
-    roomNumber: user?.roomNumber || '304',
-    block: user?.block || 'Block C',
+    roomNumber: user?.roomNumber || '',
+    block: user?.block || '',
     floor: '3rd',
     capacity: 3,
     wifi: 'WiFi connected',
     occupants: [],
+    assigned: Boolean(user?.roomNumber),
   });
 
   useEffect(() => {
@@ -39,22 +40,24 @@ export default function StudentDashboard() {
         }));
 
         setRoomCard({
-          roomNumber: room.roomNumber || user?.roomNumber || '304',
-          block: room.block || user?.block || 'Block C',
+          roomNumber: room.roomNumber || '',
+          block: room.block || '',
           floor: room.floor || '3rd',
           capacity: Number(room.capacity) || 3,
           wifi: room.wifi ? `${room.wifi} connected` : 'WiFi connected',
           occupants,
+          assigned: Boolean(room.roomNumber || user?.roomNumber),
         });
       })
       .catch(() => {
         setRoomCard((prev) => ({
           ...prev,
-          roomNumber: user?.roomNumber || prev.roomNumber,
-          block: user?.block || prev.block,
+          roomNumber: user?.roomNumber || '',
+          block: user?.block || '',
+          assigned: Boolean(user?.roomNumber),
         }));
       });
-  }, []);
+  }, [user?.block, user?.roomNumber]);
 
   const preferenceChips = useMemo(() => {
     return Object.entries(user?.preferences || {}).map(([key, value]) => `${key}: ${value}`);
@@ -108,20 +111,29 @@ export default function StudentDashboard() {
         <article className="info-card room-card">
           <div className="card-header">
             <h2>Room Status</h2>
-            <span className="status-pill active">Active</span>
+            <span className={`status-pill ${roomCard.assigned ? 'active' : 'pending'}`}>{roomCard.assigned ? 'Active' : 'Pending'}</span>
           </div>
-          <div className="room-number">{roomCard.roomNumber}</div>
-          <p>{roomCard.block}-{roomCard.floor} Floor-{roomCard.capacity}-sharing</p>
-          <div className="roommates-row">
-            {(roomCard.occupants.filter((item) => !item.isSelf).slice(0, 2)).map((item, index) => (
-              <span key={item.id} className={`roommate-avatar ${index % 2 ? 'alt' : ''}`}>{item.initials}</span>
-            ))}
-            <span>{roommateNames.length ? roommateNames.join(' & ') : 'Roommates being updated'}</span>
-          </div>
-          <div className="room-meta">
-            <span>{roomCard.wifi}</span>
-            <span>Occupancy: {roomCard.occupants.length}/{roomCard.capacity}</span>
-          </div>
+          {roomCard.assigned ? (
+            <>
+              <div className="room-number">{roomCard.roomNumber}</div>
+              <p>{roomCard.block || 'Block C'}-{roomCard.floor} Floor-{roomCard.capacity}-sharing</p>
+              <div className="roommates-row">
+                {(roomCard.occupants.filter((item) => !item.isSelf).slice(0, 2)).map((item, index) => (
+                  <span key={item.id} className={`roommate-avatar ${index % 2 ? 'alt' : ''}`}>{item.initials}</span>
+                ))}
+                <span>{roommateNames.length ? roommateNames.join(' & ') : 'Roommates being updated'}</span>
+              </div>
+              <div className="room-meta">
+                <span>{roomCard.wifi}</span>
+                <span>Occupancy: {roomCard.occupants.length}/{roomCard.capacity}</span>
+              </div>
+            </>
+          ) : (
+            <div className="allocation-pending-card mt-16">
+              <h3 style={{ margin: '0 0 6px' }}>Room allocation pending</h3>
+              <p style={{ margin: 0 }}>Your room details will appear after allocation is assigned by the admin.</p>
+            </div>
+          )}
         </article>
       </section>
 

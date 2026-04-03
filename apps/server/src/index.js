@@ -4,6 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import Student from './models/Student.js';
 import authRoutes from './routes/auth.js';
 import studentRoutes from './routes/students.js';
 import roomRoutes from './routes/rooms.js';
@@ -32,6 +33,15 @@ mongoose
   .then(async () => {
     console.log('MongoDB connected');
     await seedDatabase();
+    const users = await Student.find({}, 'name email role roomNumber block isAssigned').sort({ createdAt: 1 }).lean();
+    console.table(users.map((user) => ({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      room: user.roomNumber || '-',
+      block: user.block || '-',
+      assigned: user.isAssigned ? 'yes' : 'no',
+    })));
     console.log(`Seeded admin login: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`);
 
     const PORT = process.env.PORT || 5000;

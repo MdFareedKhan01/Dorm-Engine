@@ -39,8 +39,8 @@ function toTraitChips(personalityType = '') {
 export default function Roommate() {
   const { user } = useAuth();
   const [roomInfo, setRoomInfo] = useState({
-    roomNumber: '304',
-    block: 'Block C',
+    roomNumber: '',
+    block: '',
     floor: '3rd',
     capacity: 3,
     wifi: 'Available',
@@ -56,7 +56,14 @@ export default function Roommate() {
     fetchRoommates()
       .then((data) => {
         if (!mounted) return;
-        setRoomInfo(data.room || {});
+        setRoomInfo({
+          roomNumber: data.room?.roomNumber || '',
+          block: data.room?.block || '',
+          floor: data.room?.floor || '3rd',
+          capacity: Number(data.room?.capacity) || 3,
+          wifi: data.room?.wifi || 'Available',
+          ac: data.room?.ac || 'Active',
+        });
 
         const normalized = (data.roommates || []).map((student) => {
           const isSelfById = data.currentStudentId && String(student._id) === String(data.currentStudentId);
@@ -157,6 +164,8 @@ export default function Roommate() {
     );
   }
 
+  const hasRoom = Boolean(roomInfo.roomNumber);
+
   return (
     <section className="page-panel">
       <div className="panel-title between" style={{ marginBottom: '24px' }}>
@@ -171,49 +180,70 @@ export default function Roommate() {
           <div className="room-info-header">
             <HomeRoundedIcon style={{ fontSize: '32px', color: 'var(--brand)' }} />
             <div>
-              <h3 style={{ margin: '0 0 4px', fontSize: '28px', fontWeight: '800', color: 'var(--heading)' }}>
-                {roomInfo.roomNumber || '304'}
-              </h3>
-              <p style={{ margin: 0, fontSize: '13px', color: 'var(--muted)' }}>{roomInfo.block || 'Block C'}</p>
+              {hasRoom ? (
+                <>
+                  <h3 style={{ margin: '0 0 4px', fontSize: '28px', fontWeight: '800', color: 'var(--heading)' }}>
+                    {roomInfo.roomNumber}
+                  </h3>
+                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--muted)' }}>{roomInfo.block || 'Block C'}</p>
+                </>
+              ) : (
+                <>
+                  <h3 style={{ margin: '0 0 4px', fontSize: '28px', fontWeight: '800', color: 'var(--heading)' }}>
+                    Awaiting room allocation
+                  </h3>
+                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--muted)' }}>Room details will appear once assigned by admin.</p>
+                </>
+              )}
             </div>
           </div>
 
-          <div className="room-info-grid">
-            <div className="room-info-item">
-              <span className="room-info-label">Floor</span>
-              <span className="room-info-value">{roomInfo.floor || '3rd'}</span>
-            </div>
-            <div className="room-info-item">
-              <span className="room-info-label">Capacity</span>
-              <span className="room-info-value">{roomInfo.capacity || 3} students</span>
-            </div>
-            <div className="room-info-item">
-              <span className="room-info-label">WiFi</span>
-              <span className="room-info-value">
-                <WifiRoundedIcon style={{ fontSize: '16px', verticalAlign: 'middle', marginRight: '4px' }} />
-                {roomInfo.wifi || 'Available'}
-              </span>
-            </div>
-            <div className="room-info-item">
-              <span className="room-info-label">AC Unit</span>
-              <span className="room-info-value">{roomInfo.ac || 'Active'}</span>
-            </div>
-          </div>
+          {hasRoom ? (
+            <>
+              <div className="room-info-grid">
+                <div className="room-info-item">
+                  <span className="room-info-label">Floor</span>
+                  <span className="room-info-value">{roomInfo.floor || '3rd'}</span>
+                </div>
+                <div className="room-info-item">
+                  <span className="room-info-label">Capacity</span>
+                  <span className="room-info-value">{roomInfo.capacity || 3} students</span>
+                </div>
+                <div className="room-info-item">
+                  <span className="room-info-label">WiFi</span>
+                  <span className="room-info-value">
+                    <WifiRoundedIcon style={{ fontSize: '16px', verticalAlign: 'middle', marginRight: '4px' }} />
+                    {roomInfo.wifi || 'Available'}
+                  </span>
+                </div>
+                <div className="room-info-item">
+                  <span className="room-info-label">AC Unit</span>
+                  <span className="room-info-value">{roomInfo.ac || 'Active'}</span>
+                </div>
+              </div>
 
-          <div className="room-amenities">
-            <h4 style={{ margin: '0 0 10px', color: 'var(--heading)', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase' }}>
-              Occupancy
-            </h4>
-            <div className="amenity-list">
-              <span className="amenity-tag">{roommateCount}/{roomInfo.capacity || 3} Filled</span>
-              <span className="amenity-tag">Shared Wardrobe</span>
-              <span className="amenity-tag">Study Area</span>
+              <div className="room-amenities">
+                <h4 style={{ margin: '0 0 10px', color: 'var(--heading)', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase' }}>
+                  Occupancy
+                </h4>
+                <div className="amenity-list">
+                  <span className="amenity-tag">{roommateCount}/{roomInfo.capacity || 3} Filled</span>
+                  <span className="amenity-tag">Shared Wardrobe</span>
+                  <span className="amenity-tag">Study Area</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="allocation-pending-card mt-16">
+              <h3 style={{ margin: '0 0 6px' }}>Allocation pending</h3>
+              <p style={{ margin: 0 }}>You can still submit your profile preferences. Roommates will appear after the admin assigns a room.</p>
             </div>
-          </div>
+          )}
         </article>
 
-        <div className="roommates-grid-three">
-          {roommates.map((person) => {
+        {hasRoom ? (
+          <div className="roommates-grid-three">
+            {roommates.length ? roommates.map((person) => {
             const localFeedback = feedbackState[person._id] || {};
             const isSelfById = Boolean(currentStudentId && String(person._id) === String(currentStudentId));
             const isSelfByAuthId = Boolean(user?._id && String(person._id) === String(user._id));
@@ -296,8 +326,31 @@ export default function Roommate() {
                 ) : null}
               </article>
             );
-          })}
-        </div>
+            }) : (
+              <article className="roommate-card matched">
+                <div className="match-badge">Info</div>
+                <div className="roommate-card-header">
+                  <div className="roommate-avatar">?</div>
+                  <div className="roommate-info">
+                    <h3>No roommates assigned yet</h3>
+                    <p className="roommate-detail">Once allocation is complete, this section will show all 3 occupants.</p>
+                  </div>
+                </div>
+              </article>
+            )}
+          </div>
+        ) : (
+          <article className="roommate-card matched">
+            <div className="match-badge">Pending</div>
+            <div className="roommate-card-header">
+              <div className="roommate-avatar">!</div>
+              <div className="roommate-info">
+                <h3>Room allocation pending</h3>
+                <p className="roommate-detail">You can complete your profile now. Roommates will appear after the admin assigns a room.</p>
+              </div>
+            </div>
+          </article>
+        )}
       </div>
     </section>
   );

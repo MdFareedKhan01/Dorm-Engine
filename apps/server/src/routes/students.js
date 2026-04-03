@@ -8,7 +8,7 @@ import { buildPersonalityType, pickBestMatch } from '../utils/matching.js';
 import { buildRoomNumber, toPublicUser } from '../utils/serialize.js';
 
 const router = express.Router();
-const MIN_STUDENTS_FOR_ALLOCATION = 22;
+const MIN_STUDENTS_FOR_ALLOCATION = 20;
 const ROOM_CAPACITY = 3;
 
 router.use(verifyJWT);

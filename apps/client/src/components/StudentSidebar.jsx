@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import RestaurantMenuRoundedIcon from '@mui/icons-material/RestaurantMenuRounded';
@@ -19,7 +19,7 @@ const items = [
 export default function StudentSidebar() {
   return (
     <aside className="sidebar student-sidebar">
-      <div className="sidebar-brand">
+      <Link to="/" className="sidebar-brand sidebar-brand-link" aria-label="Go to home page">
         <div className="brand-mark">
           <HomeRoundedIcon fontSize="small" />
         </div>
@@ -27,7 +27,7 @@ export default function StudentSidebar() {
           <p className="brand-title">DormEngine</p>
           <p className="brand-subtitle">Student Portal</p>
         </div>
-      </div>
+      </Link>
 
       <nav className="sidebar-nav">
         <div className="nav-label">Student</div>

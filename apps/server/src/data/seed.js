@@ -24,6 +24,11 @@ const studentNames = [
   'Om Prakash',
   'Simran Kaur',
   'Mihir Jain',
+  'Ayesha Mirza',
+  'Reyansh Dutta',
+  'Palak Yadav',
+  'Farhan Khan',
+  'Ira Sinha',
 ];
 
 const programCycle = [
