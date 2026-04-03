@@ -556,6 +556,57 @@ th {
 .sidebar-brand-link:hover .brand-subtitle {
   color: var(--heading);
 }
+.mobile-menu-button {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-strong);
+  color: var(--brand);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.mobile-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 12, 10, 0.42);
+  z-index: 1500;
+}
+.mobile-drawer {
+  width: min(84vw, 320px);
+  height: 100%;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  box-shadow: var(--shadow-strong);
+  display: flex;
+  flex-direction: column;
+}
+.mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 12px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.mobile-drawer-close {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--surface-strong);
+  color: var(--heading);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+}
+.mobile-drawer-nav {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .warden-mark { background: rgba(91, 133, 151, 0.18); }
 .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
 .nav-label {
@@ -2241,10 +2292,18 @@ body.theme-dark .preference-option.selected {
     min-height: auto;
     border-right: 0;
     border-bottom: 1px solid var(--line);
+    display: none;
   }
+  .topbar {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .mobile-menu-button { display: inline-flex; }
   .sidebar-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .topbar { flex-direction: column; align-items: stretch; }
-  .topbar-actions { justify-content: space-between; }
+  .topbar-actions { justify-content: flex-end; margin-left: 0; }
   .quick-actions-grid,
   .warden-stats-grid,
   .fees-summary-grid,
@@ -2273,28 +2332,7 @@ body.theme-dark .preference-option.selected {
 }
 
 @media (max-width: 640px) {
-  .sidebar {
-    padding: 0 10px 12px;
-  }
-  .sidebar-brand {
-    min-height: 62px;
-    padding: 0 6px;
-  }
-  .brand-title {
-    font-size: 17px;
-  }
-  .brand-subtitle {
-    font-size: 11px;
-  }
-  .sidebar-nav {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  .nav-item {
-    padding: 11px 10px;
-    border-radius: 12px;
-  }
+  .sidebar { display: none; }
   .topbar {
     padding: 10px 12px;
     min-height: 64px;
@@ -2325,6 +2363,10 @@ body.theme-dark .preference-option.selected {
   }
   .room-number {
     font-size: 2.8rem;
+  }
+  .topbar-profile .profile-meta,
+  .topbar-profile .profile-name {
+    display: none;
   }
 }
 

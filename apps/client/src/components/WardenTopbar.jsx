@@ -3,16 +3,34 @@ import CampaignRoundedIcon from '@mui/icons-material/CampaignRounded';
 import ReportProblemRoundedIcon from '@mui/icons-material/ReportProblemRounded';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useEffect, useRef, useState } from 'react';
-import ProfileMenu from './ProfileMenu';
+import { Link, NavLink } from 'react-router-dom';
 import { fetchAdminOverview } from '../services/api';
+import ProfileMenu from './ProfileMenu';
 import { getStoredTheme, toggleTheme } from '../utils/theme';
 import { useAuth } from '../context/AuthContext';
+
+const items = [
+  { to: '/warden/dashboard', label: 'Dashboard' },
+  { to: '/warden/students', label: 'Students' },
+  { to: '/warden/staff', label: 'Staff' },
+  { to: '/warden/rooms', label: 'Rooms' },
+  { to: '/warden/room-allocation', label: 'Room Allocation' },
+  { to: '/warden/fees', label: 'Fees' },
+  { to: '/warden/complaints', label: 'Complaints' },
+  { to: '/warden/notices', label: 'Notices' },
+  { to: '/warden/maintenance', label: 'Maintenance' },
+  { to: '/warden/reports', label: 'Reports' },
+  { to: '/warden/settings', label: 'Settings' },
+];
 
 export default function WardenTopbar() {
   const { user } = useAuth();
   const [theme, setTheme] = useState(() => getStoredTheme());
   const [open, setOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [overview, setOverview] = useState({ recentComplaints: [], recentNotices: [], recentMaintenance: [] });
   const dropdownRef = useRef(null);
 
@@ -50,6 +68,48 @@ export default function WardenTopbar() {
 
   return (
     <header className="topbar warden-topbar">
+      <button
+        type="button"
+        className="mobile-menu-button"
+        onClick={() => setDrawerOpen(true)}
+        aria-label="Open navigation menu"
+      >
+        <MenuRoundedIcon />
+      </button>
+
+      {drawerOpen ? (
+        <div className="mobile-drawer-backdrop" onClick={() => setDrawerOpen(false)}>
+          <aside className="mobile-drawer" onClick={(event) => event.stopPropagation()}>
+            <div className="mobile-drawer-header">
+              <Link to="/" className="sidebar-brand sidebar-brand-link" onClick={() => setDrawerOpen(false)}>
+                <div className="brand-mark warden-mark">
+                  <CloseRoundedIcon fontSize="small" />
+                </div>
+                <div>
+                  <p className="brand-title">DormEngine</p>
+                  <p className="brand-subtitle">Admin Portal</p>
+                </div>
+              </Link>
+              <button type="button" className="mobile-drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close navigation menu">
+                <CloseRoundedIcon />
+              </button>
+            </div>
+            <nav className="mobile-drawer-nav">
+              {items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </nav>
+          </aside>
+        </div>
+      ) : null}
+
       <div className="topbar-actions" ref={dropdownRef}>
         <button
           type="button"

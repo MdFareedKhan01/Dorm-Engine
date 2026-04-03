@@ -3,13 +3,26 @@ import CampaignRoundedIcon from '@mui/icons-material/CampaignRounded';
 import ReportProblemRoundedIcon from '@mui/icons-material/ReportProblemRounded';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useEffect, useRef, useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { fetchPersonalUpdates } from '../services/api';
 import ProfileMenu from './ProfileMenu';
 import { getStoredTheme, toggleTheme } from '../utils/theme';
 
+const items = [
+  { to: '/student/dashboard', label: 'Dashboard' },
+  { to: '/student/roommate', label: 'Roommate' },
+  { to: '/student/mess', label: 'Mess' },
+  { to: '/student/notices', label: 'Notices' },
+  { to: '/student/complaints', label: 'Complaints' },
+  { to: '/student/fees', label: 'Fee Payments' },
+];
+
 export default function StudentTopbar() {
   const [open, setOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [updates, setUpdates] = useState({ notices: [], complaints: [] });
   const [theme, setTheme] = useState(() => getStoredTheme());
   const dropdownRef = useRef(null);
@@ -38,6 +51,48 @@ export default function StudentTopbar() {
 
   return (
     <header className="topbar student-topbar">
+      <button
+        type="button"
+        className="mobile-menu-button"
+        onClick={() => setDrawerOpen(true)}
+        aria-label="Open navigation menu"
+      >
+        <MenuRoundedIcon />
+      </button>
+
+      {drawerOpen ? (
+        <div className="mobile-drawer-backdrop" onClick={() => setDrawerOpen(false)}>
+          <aside className="mobile-drawer" onClick={(event) => event.stopPropagation()}>
+            <div className="mobile-drawer-header">
+              <Link to="/" className="sidebar-brand sidebar-brand-link" onClick={() => setDrawerOpen(false)}>
+                <div className="brand-mark">
+                  <CloseRoundedIcon fontSize="small" />
+                </div>
+                <div>
+                  <p className="brand-title">DormEngine</p>
+                  <p className="brand-subtitle">Student Portal</p>
+                </div>
+              </Link>
+              <button type="button" className="mobile-drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close navigation menu">
+                <CloseRoundedIcon />
+              </button>
+            </div>
+            <nav className="mobile-drawer-nav">
+              {items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </nav>
+          </aside>
+        </div>
+      ) : null}
+
       <div className="topbar-actions" ref={dropdownRef}>
         <button
           type="button"
