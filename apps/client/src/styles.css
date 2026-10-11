@@ -598,6 +598,7 @@ th {
   height: 100%;
   background: #ffffff;
   opacity: 1;
+  margin-left: auto;
   border-left: 1px solid var(--line);
   border-right: 0;
   box-shadow: 0 24px 48px rgba(12, 24, 22, 0.28);
@@ -1897,7 +1898,7 @@ th {
 .theme-note p { margin: 6px 0 0; color: var(--muted); }
 
 .inline-search {
-  min-width: 320px;
+  min-width: min(320px, 100%);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1913,6 +1914,13 @@ th {
   outline: 0;
   background: transparent;
   color: var(--heading);
+}
+.admin-table-card {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.admin-table-card table {
+  min-width: 760px;
 }
 .status-tag {
   display: inline-flex;
@@ -2428,6 +2436,14 @@ body.theme-dark .preference-option.selected {
     flex: 1;
     overflow-y: auto;
     background: #ffffff;
+  }
+  .admin-panel .card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-panel .inline-search {
+    width: 100%;
+    min-width: 0;
   }
   .topbar-actions { display: none; }
   .sidebar-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
